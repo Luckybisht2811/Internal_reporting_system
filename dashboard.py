@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import mysql.connector
+import os
+import psycopg2
 
 # =======================
 # PAGE CONFIG
@@ -121,12 +123,25 @@ st.divider()
 # =====================================================
 # MYSQL CONNECTION
 # =====================================================
-conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Lalit@282002",
-    database="reporting_db"
-)
+
+if os.getenv("RENDER") == "true":
+    # 👉 Render / Production
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST", "dpg-d594ejre5dus73e9ptgg-a"),
+        port=os.getenv("DB_PORT", "5432"),
+        database=os.getenv("DB_NAME", "internal_reporting_db"),
+        user=os.getenv("DB_USER", "internal_reporting_db_user"),
+        password=os.getenv("DB_PASSWORD", "npyWXvCuWGblUq4n0tuDSlqh6XM5guMw")
+    )
+else:
+    # 👉 Local PC
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Lalit@282002",
+        database="reporting_db"
+    )
+
 
 df = pd.read_sql("SELECT * FROM employee_kpis", conn)
 df['date'] = pd.to_datetime(df['date'])
