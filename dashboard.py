@@ -127,12 +127,14 @@ st.divider()
 if os.getenv("RENDER") == "true":
     # 👉 Render / Production
     conn = psycopg2.connect(
-        host="YOUR_SUPABASE_HOST",
-        port=5432,
-        database="YOUR_SUPABASE_DB",
-        user="YOUR_SUPABASE_USER",
-        password="YOUR_SUPABASE_PASSWORD"
+        host=os.environ["DB_HOST"],
+        port=os.environ.get("DB_PORT", "5432"),
+        database=os.environ["DB_NAME"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"]
     )
+    st.write("DB Connected!")
+
 
 else:
     # 👉 Local PC
@@ -157,32 +159,42 @@ employees = st.sidebar.multiselect(
     options=sorted(df['employee_id'].unique()),
     default=sorted(df['employee_id'].unique())
 )
-
 date_range = st.sidebar.date_input(
     "Select Date Range",
-    [df['date'].min(), df['date'].max()]
+    value=(df['date'].min(), df['date'].max())
 )
+
+# Ensure we always have start_date and end_date
+if isinstance(date_range, (tuple, list)):
+    if len(date_range) == 2:
+        start_date, end_date = date_range
+    else:
+        # Single day selected
+        start_date = end_date = date_range[0]
+else:
+    # Single day selected
+    start_date = end_date = date_range
 
 filtered_df = df[
     (df['employee_id'].isin(employees)) &
-    (df['date'] >= pd.to_datetime(date_range[0])) &
-    (df['date'] <= pd.to_datetime(date_range[1]))
+    (df['date'] >= pd.to_datetime(start_date)) &
+    (df['date'] <= pd.to_datetime(end_date))
 ]
 
 # =====================================================
 # EXECUTIVE SUMMARY
 # =====================================================
-card(
-    "📌 Executive Summary",
-    """
-    <p>
-    This dashboard provides real-time visibility into operational KPIs such as
-    call volumes, escalation trends, and employee performance.
-    The data is automatically processed and stored via backend pipelines,
-    reducing manual reporting effort by <b>80–90%</b>.
-    </p>
-    """
-    )
+st.markdown("""
+<div class="card">
+<h3>📌 Executive Summary</h3>
+<p>
+This dashboard provides real-time visibility into operational KPIs such as
+call volumes, escalation trends, and employee performance.
+The data is automatically processed and stored via backend pipelines,
+reducing manual reporting effort by <b>80–90%</b>.
+</p>
+</div>
+""", unsafe_allow_html=True)
 
 # =====================================================
 # KPI CARDS
