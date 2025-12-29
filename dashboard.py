@@ -131,6 +131,7 @@ if DATABASE_URL:
     conn = psycopg2.connect(DATABASE_URL)
     st.success("Connected to Supabase PostgreSQL")
 
+# Lalit@282002N
 
 else:
     # 👉 Local PC
