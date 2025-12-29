@@ -127,12 +127,13 @@ st.divider()
 if os.getenv("RENDER") == "true":
     # 👉 Render / Production
     conn = psycopg2.connect(
-        host=os.getenv("DB_HOST", "dpg-d594ejre5dus73e9ptgg-a"),
-        port=os.getenv("DB_PORT", "5432"),
-        database=os.getenv("DB_NAME", "internal_reporting_db"),
-        user=os.getenv("DB_USER", "internal_reporting_db_user"),
-        password=os.getenv("DB_PASSWORD", "npyWXvCuWGblUq4n0tuDSlqh6XM5guMw")
+        host="YOUR_SUPABASE_HOST",
+        port=5432,
+        database="YOUR_SUPABASE_DB",
+        user="YOUR_SUPABASE_USER",
+        password="YOUR_SUPABASE_PASSWORD"
     )
+
 else:
     # 👉 Local PC
     conn = mysql.connector.connect(
