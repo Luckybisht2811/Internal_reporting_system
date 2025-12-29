@@ -128,13 +128,13 @@ if os.getenv("RENDER") == "true":
     # 👉 Render / Production
     conn = psycopg2.connect(
         host=os.environ["DB_HOST"],
-        port=os.environ.get("DB_PORT", "5432"),
+        port=os.environ.get("DB_PORT", 5432),
         database=os.environ["DB_NAME"],
         user=os.environ["DB_USER"],
         password=os.environ["DB_PASSWORD"]
     )
     st.write("DB Connected!")
-
+# Lalit@282002N
 
 else:
     # 👉 Local PC
