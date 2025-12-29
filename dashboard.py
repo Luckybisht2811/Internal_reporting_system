@@ -124,17 +124,13 @@ st.divider()
 # MYSQL CONNECTION
 # =====================================================
 
-if os.getenv("RENDER") == "true":
-    # 👉 Render / Production
-    conn = psycopg2.connect(
-        host=os.environ["DB_HOST"],
-        port=os.environ.get("DB_PORT", 5432),
-        database=os.environ["DB_NAME"],
-        user=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"]
-    )
-    st.write("DB Connected!")
-# Lalit@282002N
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    # 👉 Render / Supabase (PostgreSQL)
+    conn = psycopg2.connect(DATABASE_URL)
+    st.success("Connected to Supabase PostgreSQL")
+
 
 else:
     # 👉 Local PC
@@ -270,6 +266,9 @@ st.markdown("""
 Designed & Developed by Lalit • Python Backend & Data Engineering Project
 </div>
 """, unsafe_allow_html=True)
+
+conn.close()
+
 
 
 
